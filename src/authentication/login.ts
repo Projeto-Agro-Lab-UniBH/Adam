@@ -26,7 +26,7 @@ export class LoginController {
 
     response.cookie('jwt', token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
+      maxAge: 8 * 60 * 60 * 1000 // 8h
     })
 
     return response.send({
