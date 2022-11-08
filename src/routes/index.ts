@@ -11,6 +11,7 @@ import { DeleteUserAccountUseCase } from "../usecases/delete-user-account-usecas
 import { DeleteUserAccountController } from "../controllers/delete-user-account-controller";
 import { LoginController } from "../authentication/login";
 import { LogoutController } from "../authentication/logout";
+import { AuthenticatedUserController } from "../authentication/profile/authenticated-user";
 
 const prismaUserRepository = new PrismaRepository();
 
@@ -18,6 +19,7 @@ const createUserAccountUseCase = new CreateUserAccountUseCase(prismaUserReposito
 const createUserAccountController = new CreateUserAccountController(createUserAccountUseCase);
 
 const loginController = new LoginController(prismaUserRepository);
+const authenticatedUserController = new AuthenticatedUserController(prismaUserRepository);
 const logoutController = new LogoutController();
 
 const updateUserAccountUseCase = new UpdateUserAccountUseCase(prismaUserRepository);
@@ -32,4 +34,4 @@ const findByIdController = new FindByIdController(findByIdUseCase);
 const findAllUseCase = new FindAllUseCase(prismaUserRepository);
 const findAllController = new FindAllController(findAllUseCase);
 
-export { createUserAccountController, loginController, logoutController, updateUserAccountController, deleteUserAccountController, findByIdController, findAllController }
+export { createUserAccountController, loginController, authenticatedUserController, logoutController, updateUserAccountController, deleteUserAccountController, findByIdController, findAllController }
