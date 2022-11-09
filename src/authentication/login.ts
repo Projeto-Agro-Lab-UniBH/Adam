@@ -29,8 +29,12 @@ export class LoginController {
       maxAge: 8 * 60 * 60 * 1000 // 8h
     })
 
+    const { password: _, ...data } = user
+
     return response.send({
-      message: 'Success login'
+      message: 'Success login',
+      user: data,
+      token: token,
     })
   }
 }

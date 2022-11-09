@@ -29,7 +29,7 @@ export class AuthenticatedUserController {
 
     const { password: _, ...data } = user
 
-    return response.send(data)
+    return response.json({ user: data, token: cookie })
   }
 }
 
