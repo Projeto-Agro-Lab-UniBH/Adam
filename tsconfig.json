@@ -5,7 +5,8 @@
     "strict": true,
     "lib": ["esnext"],
     "strictNullChecks": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["src/@types"]
   },
   "exclude": ["node_modules", "dist"],
   "ts-node": {

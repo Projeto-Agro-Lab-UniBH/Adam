@@ -1,3 +1,4 @@
+// future task
 // import { Request, Response, NextFunction } from "express"
 // import { UnauthorizedError } from "../errors/ApiError"
 // import jwt from 'jsonwebtoken'
@@ -16,11 +17,10 @@
 //   const cookie = request.cookies['jwt']
 
 //   if (!cookie) {
-//     throw new UnauthorizedError('Unauthenticated')
+//     throw new UnauthorizedError('Unauthenticated');
 //   }
 
 //   const { id } = jwt.verify(cookie, process.env.JWTPASS ?? '') as JwtPayload
-
 //   const user = await userRepository.findById(id)
 
 //   if (!user) {
@@ -29,7 +29,7 @@
 
 //   const { password: _, ...loggedUser } = user
 
-//   response.send(loggedUser)
+//   request.user = loggedUser
 
 //   next()
 // }
