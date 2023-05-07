@@ -1,28 +1,63 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                        String  @id @default(uuid())
-  profile_photo             String?
-  fullname                  String
-  birthdate                 String
-  home_state                String
-  email                     String  @unique
-  cell_phone_contact        String?
-  residential_phone_contact String?
-  campus_name               String
-  profession                String
-  ra                        Int     @unique
-  password                  String
-
-  @@map("users")
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile_photo String?
+  username      String
+  email         String
+  password      String
 }
+
+model Animal {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  profile_photo  String?
+  name           String?
+  owner          String?
+  specie         String?
+  gender         String?
+  type           String?
+  weight         String?
+  physical_shape String?
+  entry_date     String?
+  departure_date String?
+  reports        Report[]
+  exams          Exam[]
+}
+
+model Report {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String  @db.ObjectId
+  title     String
+  text      String
+  createdAt String?
+  updatedAt String?
+  patient   Animal? @relation(fields: [patientId], references: [id])
+}
+
+model Exam {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String  @db.ObjectId
+  name      String
+  data      Json
+  createdAt String?
+  updatedAt String?
+  patient   Animal? @relation(fields: [patientId], references: [id])
+  // Attachments Attachments[]
+}
+
+// model Attachments {
+//   id              String  @id @default(auto()) @map("_id") @db.ObjectId
+//   examId          String  @db.ObjectId
+//   title           String
+//   attachment_name String
+//   description     String?
+//   createdAt       String?
+//   exam            Exams   @relation(fields: [examId], references: [id])
+// }
