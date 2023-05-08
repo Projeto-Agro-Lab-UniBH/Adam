@@ -1,14 +1,10 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
-import { Request, Response } from 'express';
 import { UserPayload } from './models/UserPayload.model';
 import { UserService } from '../user/user.service';
+import { UserToken } from './models/UserToken';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +13,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async signin(dto: AuthDto, req: Request, res: Response) {
+  async signin(dto: AuthDto): Promise<UserToken> {
     const { email, password } = dto;
     const user = await this.userService.findByEmail(email);
 
@@ -31,37 +27,15 @@ export class AuthService {
       throw new BadRequestException('Wrong credentials');
     }
 
-    const token = await this.signToken({
-      id: user.id,
+    const payload: UserPayload = {
+      sub: user.id,
       email: user.email,
       username: user.username,
-    });
-
-    if (!token) {
-      throw new ForbiddenException('Could not signin');
-    }
-
-    res.cookie('token', token, {});
-
-    return res.send({ message: 'Logged in succefully' });
-  }
-
-  async signout(req: Request, res: Response) {
-    res.clearCookie('token');
-    return res.send({ message: 'Logged out succefully' });
-  }
-
-  async signToken(args: { id: string; email: string; username: string }) {
-    const payload: UserPayload = {
-      sub: args.id,
-      email: args.email,
-      username: args.username,
+      profile_photo: user.profile_photo,
     };
 
-    const token = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET_KEY,
-    });
+    const jwtToken = await this.jwtService.signAsync(payload);
 
-    return token;
+    return { access_token: jwtToken };
   }
 }

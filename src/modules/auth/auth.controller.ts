@@ -24,14 +24,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('signin')
-  async signin(@Request() req, @Response() res, @Body() dto: AuthDto) {
-    return this.authService.signin(dto, req, res);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @Get('signout')
-  signout(@Request() req, @Response() res) {
-    return this.authService.signout(req, res);
+  async signin(@Body() dto: AuthDto) {
+    return this.authService.signin(dto);
   }
 }
