@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from '../../../decorator/is-public.decorator';
+import { IS_PUBLIC_KEY } from '../decorator/is-public.decorator';
 import { UnauthorizedError } from '../../../errors/unauthorized.error';
 
 @Injectable()

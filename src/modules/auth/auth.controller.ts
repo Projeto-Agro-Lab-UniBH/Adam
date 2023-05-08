@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { IsPublic } from '../../decorator/is-public.decorator';
+import { IsPublic } from './decorator/is-public.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiExcludeController } from '@nestjs/swagger';
 

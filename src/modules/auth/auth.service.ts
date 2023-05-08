@@ -7,7 +7,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
 import { Request, Response } from 'express';
-import { UserToken } from './models/UserToken.model';
 import { UserPayload } from './models/UserPayload.model';
 import { UserService } from '../user/user.service';
 
@@ -52,20 +51,17 @@ export class AuthService {
     return res.send({ message: 'Logged out succefully' });
   }
 
-  async signToken(args: {
-    id: string;
-    email: string;
-    username: string;
-  }): Promise<UserToken> {
+  async signToken(args: { id: string; email: string; username: string }) {
     const payload: UserPayload = {
       sub: args.id,
       email: args.email,
       username: args.username,
     };
-    return {
-      access_token: await this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET_KEY,
-      }),
-    };
+
+    const token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET_KEY,
+    });
+
+    return token;
   }
 }
