@@ -13,12 +13,16 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { IsPublic } from 'src/modules/auth/decorator/is-public.decorator';
+import { CurrentUser } from 'src/modules/auth/decorator/current-user.decorator';
+import { UserEntity } from './entities/user.entity';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @IsPublic()
   @HttpCode(HttpStatus.CREATED)
   @Post()
   create(@Body() dto: CreateUserDto) {
@@ -29,6 +33,11 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.getAll();
+  }
+
+  @Get('/me')
+  getMe(@CurrentUser() currentUser: UserEntity) {
+    return currentUser;
   }
 
   @HttpCode(HttpStatus.FOUND)
