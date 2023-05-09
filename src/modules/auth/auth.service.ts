@@ -34,8 +34,10 @@ export class AuthService {
       profile_photo: user.profile_photo,
     };
 
+    const { password: _, ...data } = user;
+
     const jwtToken = await this.jwtService.signAsync(payload);
 
-    return { access_token: jwtToken };
+    return { token: jwtToken, user: data };
   }
 }
