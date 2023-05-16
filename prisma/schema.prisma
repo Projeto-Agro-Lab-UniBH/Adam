@@ -21,6 +21,7 @@ model Animal {
   name           String?
   owner          String?
   specie         String?
+  race           String?
   gender         String?
   type           String?
   weight         String?
