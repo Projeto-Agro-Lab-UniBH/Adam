@@ -25,7 +25,6 @@ export class ReportsController {
     return this.reportsService.create(createReportDto);
   }
 
-  @HttpCode(HttpStatus.FOUND)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reportsService.findOne(id);

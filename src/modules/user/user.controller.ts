@@ -29,7 +29,6 @@ export class UserController {
     return this.userService.create(dto);
   }
 
-  @HttpCode(HttpStatus.FOUND)
   @Get()
   findAll() {
     return this.userService.getAll();
@@ -40,7 +39,6 @@ export class UserController {
     return { user: currentUser };
   }
 
-  @HttpCode(HttpStatus.FOUND)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);

@@ -42,15 +42,9 @@ export class UserRepository {
     return users;
   }
 
-  async create({
-    profile_photo,
-    username,
-    email,
-    password,
-  }: CreateUserDto): Promise<void> {
+  async create({ username, email, password }: CreateUserDto): Promise<void> {
     await this.prisma.user.create({
       data: {
-        profile_photo,
         username,
         email,
         password,

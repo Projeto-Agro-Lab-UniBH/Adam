@@ -45,6 +45,10 @@ export class AnimalService {
     return await this.repository.getAll();
   }
 
+  async filterByAnimalType(animalType: string) {
+    return await this.repository.filterByAnimalType(animalType);
+  }
+
   async findOne(id: string) {
     const animal = await this.repository.findById(id);
 
@@ -74,10 +78,6 @@ export class AnimalService {
 
     if (!animal) {
       throw new NotFoundException('Not found animal.');
-    }
-
-    if (profile_photo && !profile_photo.startsWith('data:image/png;base64')) {
-      throw new BadRequestException('Invalid file format.');
     }
 
     return await this.repository.update(id, {

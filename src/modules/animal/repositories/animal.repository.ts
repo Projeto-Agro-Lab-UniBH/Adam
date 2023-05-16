@@ -11,30 +11,30 @@ export class AnimalRepository {
   async findById(id: string): Promise<AnimalEntity | null> {
     const animal = await this.prisma.animal.findUnique({
       where: { id },
-      include: {
-        reports: {
-          select: {
-            id: true,
-            patientId: false,
-            title: true,
-            text: true,
-            createdAt: true,
-            updatedAt: true,
-            patient: false,
-          },
-        },
-        exams: {
-          select: {
-            id: true,
-            patientId: false,
-            name: true,
-            data: true,
-            createdAt: true,
-            updatedAt: true,
-            patient: false,
-          },
-        },
-      },
+      // include: {
+      //   reports: {
+      //     select: {
+      //       id: true,
+      //       patientId: false,
+      //       title: true,
+      //       text: true,
+      //       createdAt: true,
+      //       updatedAt: true,
+      //       patient: false,
+      //     },
+      //   },
+      //   exams: {
+      //     select: {
+      //       id: true,
+      //       patientId: false,
+      //       name: true,
+      //       data: true,
+      //       createdAt: true,
+      //       updatedAt: true,
+      //       patient: false,
+      //     },
+      //   },
+      // },
     });
 
     if (!animal) {
@@ -42,6 +42,22 @@ export class AnimalRepository {
     }
 
     return animal;
+  }
+
+  async filterByAnimalType(type: string): Promise<AnimalEntity[] | null> {
+    const animals = await this.prisma.animal.findMany({
+      where: {
+        type: {
+          contains: type,
+        },
+      },
+    });
+
+    if (!animals) {
+      return null;
+    }
+
+    return animals;
   }
 
   async getAll(): Promise<AnimalEntity[] | null> {

@@ -13,21 +13,16 @@ import { UserEntity } from './entities/user.entity';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async create({ profile_photo, username, email, password }: CreateUserDto) {
+  async create({ username, email, password }: CreateUserDto) {
     const emailAlreadyExists = await this.repository.findByEmail(email);
 
     if (emailAlreadyExists) {
       throw new BadRequestException('Email already exists');
     }
 
-    if (profile_photo && !profile_photo.startsWith('data:image/png;base64')) {
-      throw new BadRequestException('Invalid file format.');
-    }
-
     const hash = await bcrypt.hash(password, 8);
 
     return await this.repository.create({
-      profile_photo: profile_photo,
       username: username,
       email: email,
       password: hash,
@@ -66,10 +61,6 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('Not found user.');
-    }
-
-    if (profile_photo && !profile_photo.startsWith('data:image/png;base64')) {
-      throw new BadRequestException('Invalid file format.');
     }
 
     const hash = await bcrypt.hash(password, 8);
