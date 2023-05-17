@@ -25,6 +25,7 @@ model Animal {
   gender         String?
   type           String?
   weight         String?
+  situation      String?
   physical_shape String?
   entry_date     String?
   departure_date String?

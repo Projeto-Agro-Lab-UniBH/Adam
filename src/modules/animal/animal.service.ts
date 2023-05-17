@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAnimalDto } from './dtos/create-animal.dto';
 import { UpdateAnimalDto } from './dtos/update-animal.dto';
 import { AnimalRepository } from './repositories/animal.repository';
@@ -16,25 +12,25 @@ export class AnimalService {
     name,
     owner,
     specie,
+    race,
     gender,
     type,
     weight,
+    situation,
     physical_shape,
     entry_date,
     departure_date,
   }: CreateAnimalDto) {
-    if (profile_photo && !profile_photo.startsWith('data:image/png;base64')) {
-      throw new BadRequestException('Invalid file format.');
-    }
-
     return await this.repository.create({
       profile_photo,
       name,
       owner,
       specie,
+      race,
       gender,
       type,
       weight,
+      situation,
       physical_shape,
       entry_date,
       departure_date,
@@ -66,9 +62,11 @@ export class AnimalService {
       name,
       owner,
       specie,
+      race,
       gender,
       type,
       weight,
+      situation,
       physical_shape,
       entry_date,
       departure_date,
@@ -85,9 +83,11 @@ export class AnimalService {
       name,
       owner,
       specie,
+      race,
       gender,
       type,
       weight,
+      situation,
       physical_shape,
       entry_date,
       departure_date,
