@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAnimalDto {
@@ -42,7 +43,7 @@ export class CreateAnimalDto {
   situation?: string;
 
   @ApiProperty()
-  diagnosis: string[];
+  diagnosis?: Prisma.JsonValue[];
 
   @ApiProperty()
   @IsString({ message: 'physical_shape filed must be string' })

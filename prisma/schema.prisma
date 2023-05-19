@@ -26,7 +26,7 @@ model Animal {
   type           String?
   weight         String?
   situation      String?
-  diagnosis      String[]
+  diagnosis      Json[]
   physical_shape String?
   entry_date     String?
   departure_date String?

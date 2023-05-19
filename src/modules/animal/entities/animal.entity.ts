@@ -1,4 +1,4 @@
-import { Animal } from '@prisma/client';
+import { Animal, Prisma } from '@prisma/client';
 
 export class AnimalEntity implements Animal {
   id: string;
@@ -11,7 +11,7 @@ export class AnimalEntity implements Animal {
   type: string;
   weight: string;
   situation: string;
-  diagnosis: string[];
+  diagnosis: Prisma.JsonValue[];
   physical_shape: string;
   entry_date: string;
   departure_date: string;

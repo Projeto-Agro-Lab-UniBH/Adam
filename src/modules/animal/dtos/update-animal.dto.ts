@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateAnimalDto {
@@ -8,7 +9,7 @@ export class UpdateAnimalDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'name field cannot be empty' })
   @IsString({ message: 'name field must be string' })
-  name: string;
+  name?: string;
 
   @ApiProperty()
   @IsString({ message: 'owner field must be string' })
@@ -17,7 +18,7 @@ export class UpdateAnimalDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'specie field cannot be empty' })
   @IsString({ message: 'specie field must be string' })
-  specie: string;
+  specie?: string;
 
   @ApiProperty()
   @IsString({ message: 'race field must be string' })
@@ -26,12 +27,12 @@ export class UpdateAnimalDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'gender field cannot be empty' })
   @IsString({ message: 'gender field must be string' })
-  gender: string;
+  gender?: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'type field cannot be empty' })
   @IsString({ message: 'type field must be string' })
-  type: string;
+  type?: string;
 
   @ApiProperty()
   @IsString({ message: 'weight filed must be string' })
@@ -42,7 +43,7 @@ export class UpdateAnimalDto {
   situation?: string;
 
   @ApiProperty()
-  diagnosis: string[];
+  diagnosis?: Prisma.JsonValue[];
 
   @ApiProperty()
   @IsString({ message: 'physical_shape filed must be string' })
