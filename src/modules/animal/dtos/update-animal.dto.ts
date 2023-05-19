@@ -42,6 +42,9 @@ export class UpdateAnimalDto {
   situation?: string;
 
   @ApiProperty()
+  diagnosis: string[];
+
+  @ApiProperty()
   @IsString({ message: 'physical_shape filed must be string' })
   physical_shape?: string;
 

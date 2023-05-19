@@ -20,9 +20,8 @@ export class CreateAnimalDto {
   specie: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'race field cannot be empty' })
   @IsString({ message: 'race field must be string' })
-  race: string;
+  race?: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'gender field cannot be empty' })
@@ -41,6 +40,9 @@ export class CreateAnimalDto {
   @ApiProperty()
   @IsString({ message: 'situation filed must be string' })
   situation?: string;
+
+  @ApiProperty()
+  diagnosis: string[];
 
   @ApiProperty()
   @IsString({ message: 'physical_shape filed must be string' })

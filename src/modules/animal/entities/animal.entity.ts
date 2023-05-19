@@ -11,6 +11,7 @@ export class AnimalEntity implements Animal {
   type: string;
   weight: string;
   situation: string;
+  diagnosis: string[];
   physical_shape: string;
   entry_date: string;
   departure_date: string;
