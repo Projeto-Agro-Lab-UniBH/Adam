@@ -3,57 +3,116 @@ import { Prisma } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateAnimalDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'animal profile picture',
+    default: '',
+  })
   profile_photo?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal name',
+    default: 'Kira',
+  })
   @IsNotEmpty({ message: 'name field cannot be empty' })
   @IsString({ message: 'name field must be string' })
   name?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal owner name',
+    default: 'não identificado',
+  })
   @IsString({ message: 'owner field must be string' })
   owner?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal specie name',
+    default: 'Amazona aestiva',
+  })
   @IsNotEmpty({ message: 'specie field cannot be empty' })
   @IsString({ message: 'specie field must be string' })
   specie?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal race name',
+    default: 'papagaio-verdadeiro',
+  })
   @IsString({ message: 'race field must be string' })
   race?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal gender name',
+    default: 'Macho',
+  })
   @IsNotEmpty({ message: 'gender field cannot be empty' })
   @IsString({ message: 'gender field must be string' })
   gender?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'animal kind name',
+    default: 'Aves',
+  })
   @IsNotEmpty({ message: 'type field cannot be empty' })
   @IsString({ message: 'type field must be string' })
   type?: string;
 
-  @ApiProperty()
-  @IsString({ message: 'weight filed must be string' })
+  @ApiProperty({
+    type: String,
+    description: 'animal weight',
+    default: '320g',
+  })
+  @IsString({ message: 'weight field must be string' })
   weight?: string;
 
-  @ApiProperty()
-  @IsString({ message: 'situation filed must be string' })
+  @ApiProperty({
+    type: String,
+    description: 'What situation is the animal in?',
+    default: 'Em observação',
+  })
+  @IsString({ message: 'situation field must be string' })
   situation?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'animal diagnosis',
+    default: [
+      {
+        label: 'Asas quebradas',
+        value: 'Asas quebradas',
+      },
+      {
+        label: 'Bico perfurado',
+        value: 'Bico perfurado',
+      },
+    ],
+  })
   diagnosis?: Prisma.JsonValue[];
 
-  @ApiProperty()
-  @IsString({ message: 'physical_shape filed must be string' })
+  @ApiProperty({
+    type: String,
+    description: 'physical size of the animal',
+    default: 'Leve porte',
+  })
+  @IsString({ message: 'physical_shape field must be string' })
   physical_shape?: string;
 
-  @ApiProperty()
-  @IsString({ message: 'entry_date filed must be string' })
+  @ApiProperty({
+    type: String,
+    description: 'date the animal was admitted to the hospital',
+    default: '21-03-2013',
+  })
+  @IsString({ message: 'entry_date field must be string' })
   entry_date?: string;
 
-  @ApiProperty()
-  @IsString({ message: 'departure_date filed must be string' })
+  @ApiProperty({
+    type: String,
+    description: 'date the animal left the hospital',
+    default: '24-03-2013',
+  })
+  @IsString({ message: 'departure_date field must be string' })
   departure_date?: string;
 }
