@@ -39,11 +39,13 @@ export class UserController {
     return { user: currentUser };
   }
 
+  @IsPublic()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
+  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
