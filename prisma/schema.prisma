@@ -8,24 +8,23 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  id            String  @id @default(uuid()) @map("_id") @db.ObjectId
   profile_photo String?
   username      String
   email         String
   password      String
 }
 
-model Animal {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+model Patient {
+  id             String   @id @default(uuid()) @map("_id") @db.ObjectId
   profile_photo  String?
-  name           String?
+  name           String
   owner          String?
   specie         String?
   race           String?
   gender         String?
-  type           String?
   weight         String?
-  situation      String?
+  prognosis      String?
   diagnosis      Json[]
   physical_shape String?
   entry_date     String?
@@ -35,23 +34,24 @@ model Animal {
 }
 
 model Report {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String  @db.ObjectId
-  title     String
-  text      String
-  createdAt String?
-  updatedAt String?
-  patient   Animal? @relation(fields: [patientId], references: [id])
+  id          String   @id @default(uuid()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
+  shift       String
+  author      String
+  report_text String
+  createdAt   String?
+  updatedAt   String?
+  attachments String[]
+  patient     Patient? @relation(fields: [patientId], references: [id])
 }
 
 model Exam {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String  @db.ObjectId
+  id        String   @id @default(uuid()) @map("_id") @db.ObjectId
+  patientId String   @db.ObjectId
   name      String
-  data      Json
   createdAt String?
   updatedAt String?
-  patient   Animal? @relation(fields: [patientId], references: [id])
+  patient   Patient? @relation(fields: [patientId], references: [id])
   // Attachments Attachments[]
 }
 
