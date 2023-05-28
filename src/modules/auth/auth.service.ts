@@ -31,13 +31,10 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       username: user.username,
-      profile_photo: user.profile_photo,
     };
-
-    const { password: _, ...data } = user;
 
     const jwtToken = await this.jwtService.signAsync(payload);
 
-    return { token: jwtToken, user: data };
+    return { token: jwtToken };
   }
 }
