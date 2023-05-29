@@ -21,7 +21,7 @@ export class UpdateUserDto {
   })
   @IsNotEmpty({ message: 'username cannot be empty' })
   @IsString({ message: 'username field must be string' })
-  username: string;
+  username?: string;
 
   @ApiProperty({
     type: String,
@@ -30,7 +30,7 @@ export class UpdateUserDto {
   })
   @IsString({ message: 'email field must be string' })
   @IsEmail({}, { message: 'email shoud be valid' })
-  email: string;
+  email?: string;
 
   @ApiProperty({
     type: String,
@@ -42,5 +42,5 @@ export class UpdateUserDto {
     message: 'The password does not meet the requirements',
   })
   @IsString({ message: 'password field must be string' })
-  password: string;
+  password?: string;
 }

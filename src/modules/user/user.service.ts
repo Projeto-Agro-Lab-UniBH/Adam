@@ -13,7 +13,7 @@ import { UserEntity } from './entities/user.entity';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async create({ username, email, password }: CreateUserDto) {
+  async create({ profile_photo, username, email, password }: CreateUserDto) {
     const emailAlreadyExists = await this.repository.findByEmail(email);
 
     if (emailAlreadyExists) {
@@ -23,6 +23,7 @@ export class UserService {
     const hash = await bcrypt.hash(password, 8);
 
     return await this.repository.create({
+      profile_photo: profile_photo,
       username: username,
       email: email,
       password: hash,

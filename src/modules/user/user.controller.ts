@@ -14,8 +14,6 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/modules/auth/decorator/is-public.decorator';
-import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { User } from '@prisma/client';
 
 @ApiTags('User')
 @Controller('user')
@@ -34,18 +32,11 @@ export class UserController {
     return this.userService.getAll();
   }
 
-  @Get('/me')
-  getMe(@CurrentUser() currentUser: User) {
-    return { user: currentUser };
-  }
-
-  @IsPublic()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
