@@ -8,15 +8,23 @@ export class CreateReportDto {
   patientId: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'title field cannot be empty' })
-  @IsString({ message: 'title field must be string' })
-  title: string;
+  @IsNotEmpty({ message: 'shift field cannot be empty' })
+  @IsString({ message: 'shift field must be string' })
+  shift: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'author field cannot be empty' })
+  @IsString({ message: 'author field must be string' })
+  author: string;
 
   @ApiProperty()
   @MaxLength(1000, {
     message: 'text must not contain more than 1000 characters',
   })
-  @IsNotEmpty({ message: 'text field cannot be empty' })
-  @IsString({ message: 'text field must be string' })
-  text: string;
+  @IsNotEmpty({ message: 'report_text field cannot be empty' })
+  @IsString({ message: 'report_text field must be string' })
+  report_text?: string;
+
+  @ApiProperty()
+  attachments?: string;
 }

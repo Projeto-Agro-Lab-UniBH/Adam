@@ -17,9 +17,4 @@ export class CreateExamDto {
   @IsNotEmpty({ message: 'name field cannot be empty' })
   @IsString({ message: 'name field must be string' })
   name: string;
-
-  @ApiProperty()
-  @IsNotEmptyObject({}, { message: 'data field cannot be object empty' })
-  @IsObject({ message: 'data field must be a json object' })
-  data: Prisma.JsonValue;
 }

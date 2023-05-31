@@ -6,17 +6,23 @@ import {
 import { CreateReportDto } from './dtos/create-report.dto';
 import { UpdateReportDto } from './dtos/update-report.dto';
 import { ReportsRepository } from './repositories/reports.repository';
-import { AnimalService } from '../animal/animal.service';
+import { PatientService } from '../patient/patient.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     private readonly repository: ReportsRepository,
-    private readonly animalService: AnimalService,
+    private readonly patientService: PatientService,
   ) {}
 
-  async create({ patientId, title, text }: CreateReportDto) {
-    const patientExists = await this.animalService.findOne(patientId);
+  async create({
+    patientId,
+    shift,
+    author,
+    report_text,
+    attachments,
+  }: CreateReportDto) {
+    const patientExists = await this.patientService.findOne(patientId);
 
     if (!patientExists) {
       throw new BadRequestException('Animal id not exist.');
@@ -24,8 +30,10 @@ export class ReportsService {
 
     return await this.repository.create({
       patientId,
-      title,
-      text,
+      shift,
+      author,
+      report_text,
+      attachments,
     });
   }
 
@@ -39,7 +47,15 @@ export class ReportsService {
     return report;
   }
 
-  async update(id: string, { title, text }: UpdateReportDto) {
+  async getAllReportsByPatientId(patientId: string) {
+    const reports = await this.repository.getAllReportsByPatientId(patientId);
+    return reports;
+  }
+
+  async update(
+    id: string,
+    { patientId, shift, author, report_text, attachments }: UpdateReportDto,
+  ) {
     const report = await this.repository.findById(id);
 
     if (!report) {
@@ -47,8 +63,11 @@ export class ReportsService {
     }
 
     return await this.repository.update(id, {
-      title,
-      text,
+      patientId,
+      shift,
+      author,
+      report_text,
+      attachments,
     });
   }
 

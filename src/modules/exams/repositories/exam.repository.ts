@@ -23,26 +23,24 @@ export class ExamRepository {
     return exam;
   }
 
-  async create({ patientId, name, data }: CreateExamDto): Promise<ExamEntity> {
+  async create({ patientId, name }: CreateExamDto): Promise<ExamEntity> {
     return await this.prisma.exam.create({
       data: {
         patientId,
         name,
-        data,
         createdAt: format(new Date(), 'dd-MM-yyyy').toString(),
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
     });
   }
 
-  async update(id: string, { name, data }: UpdateExamDto): Promise<ExamEntity> {
+  async update(id: string, { name }: UpdateExamDto): Promise<ExamEntity> {
     return await this.prisma.exam.update({
       where: {
         id,
       },
       data: {
         name,
-        data,
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
     });

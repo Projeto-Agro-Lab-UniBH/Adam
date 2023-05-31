@@ -3,10 +3,10 @@ import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ReportsRepository } from './repositories/reports.repository';
-import { AnimalModule } from '../animal/animal.module';
+import { PatientModule } from '../patient/patient.module';
 
 @Module({
-  imports: [PrismaModule, AnimalModule],
+  imports: [PrismaModule, PatientModule],
   controllers: [ReportsController],
   providers: [ReportsRepository, ReportsService],
 })

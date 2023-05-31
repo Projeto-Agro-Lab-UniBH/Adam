@@ -23,16 +23,38 @@ export class ReportsRepository {
     return report;
   }
 
+  async getAllReportsByPatientId(
+    patientId: string,
+  ): Promise<ReportEntity[] | null> {
+    const reports = await this.prisma.report.findMany({
+      where: {
+        patientId: {
+          equals: patientId,
+        },
+      },
+    });
+
+    if (!reports) {
+      return null;
+    }
+
+    return reports;
+  }
+
   async create({
     patientId,
-    title,
-    text,
+    shift,
+    author,
+    report_text,
+    attachments,
   }: CreateReportDto): Promise<ReportEntity> {
     return await this.prisma.report.create({
       data: {
         patientId,
-        title,
-        text,
+        shift,
+        author,
+        report_text,
+        attachments,
         createdAt: format(new Date(), 'dd-MM-yyyy').toString(),
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
@@ -41,13 +63,16 @@ export class ReportsRepository {
 
   async update(
     id: string,
-    { title, text }: UpdateReportDto,
+    { patientId, shift, author, report_text, attachments }: UpdateReportDto,
   ): Promise<ReportEntity> {
     return await this.prisma.report.update({
       where: { id },
       data: {
-        title,
-        text,
+        patientId,
+        shift,
+        author,
+        report_text,
+        attachments,
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
     });

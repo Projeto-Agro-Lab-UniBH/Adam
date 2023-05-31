@@ -6,17 +6,17 @@ import {
 import { CreateExamDto } from './dtos/create-exam.dto';
 import { UpdateExamDto } from './dtos/update-exam.dto';
 import { ExamRepository } from './repositories/exam.repository';
-import { AnimalService } from '../animal/animal.service';
+import { PatientService } from '../patient/patient.service';
 
 @Injectable()
 export class ExamsService {
   constructor(
     private readonly repository: ExamRepository,
-    private readonly animalService: AnimalService,
+    private readonly patientService: PatientService,
   ) {}
 
-  async create({ patientId, name, data }: CreateExamDto) {
-    const patientExists = await this.animalService.findOne(patientId);
+  async create({ patientId, name }: CreateExamDto) {
+    const patientExists = await this.patientService.findOne(patientId);
 
     if (!patientExists) {
       throw new BadRequestException('Animal id not exist.');
@@ -25,7 +25,6 @@ export class ExamsService {
     return await this.repository.create({
       patientId,
       name,
-      data,
     });
   }
 
@@ -39,7 +38,7 @@ export class ExamsService {
     return exam;
   }
 
-  async update(id: string, { name, data }: UpdateExamDto) {
+  async update(id: string, { name }: UpdateExamDto) {
     const examExists = await this.repository.findById(id);
 
     if (!examExists) {
@@ -48,7 +47,6 @@ export class ExamsService {
 
     return await this.repository.update(id, {
       name,
-      data,
     });
   }
 
