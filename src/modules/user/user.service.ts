@@ -4,17 +4,20 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserRepository } from './repositories/user.repository';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
+import { HelperFile } from '../../helper/FileHelper';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create({ profile_photo, username, email, password }: CreateUserDto) {
-    const emailAlreadyExists = await this.repository.findByEmail(email);
+  async create({ username, email, password }: CreateUserDto) {
+    const emailAlreadyExists = await this.prisma.user.findFirst({
+      where: { email },
+    });
 
     if (emailAlreadyExists) {
       throw new BadRequestException('Email already exists');
@@ -22,20 +25,38 @@ export class UserService {
 
     const hash = await bcrypt.hash(password, 8);
 
-    return await this.repository.create({
-      profile_photo: profile_photo,
-      username: username,
-      email: email,
-      password: hash,
+    const user = await this.prisma.user.create({
+      data: {
+        username,
+        email,
+        password: hash,
+      },
     });
+
+    return user;
   }
 
   async getAll() {
-    return await this.repository.getAll();
+    const user = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        profile_photo: true,
+        imageUrl: true,
+        username: true,
+        email: true,
+        password: false,
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
   }
 
-  async findOne(id: string): Promise<UserEntity> {
-    const user = await this.repository.findById(id);
+  async findOne(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('Not found user.');
@@ -45,7 +66,7 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    const user = await this.repository.findByEmail(email);
+    const user = await this.prisma.user.findFirst({ where: { email } });
 
     if (!user) {
       throw new NotFoundException('Not found user.');
@@ -54,33 +75,66 @@ export class UserService {
     return user;
   }
 
-  async update(
-    id: string,
-    { profile_photo, username, email, password }: UpdateUserDto,
-  ) {
-    const user = await this.repository.findById(id);
+  async update(id: string, { username, email, password }: UpdateUserDto) {
+    const userAlreadyExists = await this.prisma.user.findUnique({
+      where: { id },
+    });
 
-    if (!user) {
+    if (!userAlreadyExists) {
       throw new NotFoundException('Not found user.');
     }
 
     const hash = await bcrypt.hash(password, 8);
 
-    return this.repository.update(id, {
-      profile_photo,
-      username,
-      email,
-      password: hash,
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        username,
+        email,
+        password: hash,
+      },
     });
   }
 
   async remove(id: string) {
-    const user = await this.repository.findById(id);
+    const userAlreadyExists = await this.prisma.user.findUnique({
+      where: { id },
+    });
 
-    if (!user) {
+    if (!userAlreadyExists) {
       throw new NotFoundException('Not found user.');
     }
 
-    return await this.repository.delete(id);
+    return await this.prisma.user.delete({ where: { id } });
+  }
+
+  async updateProfilePhoto(id: string, file: string, fileName: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (user.profile_photo === null || user.profile_photo === '') {
+      return await this.prisma.user.update({
+        where: { id },
+        data: {
+          profile_photo: file,
+          imageUrl: process.env.HOST + '/profile-photo/' + fileName,
+        },
+      });
+    } else {
+      await HelperFile.removeFile(user.profile_photo);
+
+      return await this.prisma.user.update({
+        where: { id },
+        data: {
+          profile_photo: file,
+          imageUrl:
+            'http://localhost:' +
+            process.env.HOST +
+            '/user/profile-photo/' +
+            fileName,
+        },
+      });
+    }
   }
 }

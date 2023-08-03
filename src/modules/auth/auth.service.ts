@@ -40,6 +40,7 @@ export class AuthService {
       user: {
         id: user.id,
         profile_photo: user.profile_photo,
+        imageUrl: user.imageUrl,
         username: user.username,
         email: user.email,
       },

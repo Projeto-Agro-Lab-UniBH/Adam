@@ -9,12 +9,6 @@ import {
 
 export class UpdateUserDto {
   @ApiProperty({
-    description: 'user profile photo',
-    default: '',
-  })
-  profile_photo?: string;
-
-  @ApiProperty({
     type: String,
     description: 'user name',
     default: 'Theo Montesquieu Hernandes',

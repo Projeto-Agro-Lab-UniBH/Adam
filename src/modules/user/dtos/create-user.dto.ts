@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -6,14 +5,9 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
-  @ApiProperty({
-    description: 'user profile photo',
-    default: '',
-  })
-  profile_photo?: string;
-
   @ApiProperty({
     type: String,
     description: 'user name',
