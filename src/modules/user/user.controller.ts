@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Response,
   HttpCode,
   HttpStatus,
   UploadedFile,
@@ -18,13 +17,15 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/modules/auth/decorator/is-public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { HelperFile } from 'src/helper/FileHelper';
+import { FilesAzureService } from '../files/file.azure.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly fileService: FilesAzureService,
+  ) {}
 
   @IsPublic()
   @HttpCode(HttpStatus.CREATED)
@@ -45,8 +46,14 @@ export class UserController {
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.userService.update(id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    const { username, email, password } = dto;
+
+    return this.userService.update(id, {
+      username,
+      email,
+      password,
+    });
   }
 
   @HttpCode(HttpStatus.OK)
@@ -56,33 +63,14 @@ export class UserController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Patch('upload/profile-photo/:id')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/profile-photo',
-        filename: HelperFile.profileNameHash,
-      }),
-    }),
-  )
+  @Patch('upload/image/:id')
+  @UseInterceptors(FileInterceptor('image'))
   async uploadProfilePhoto(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.userService.updateProfilePhoto(
-      id,
-      file.path,
-      file.filename,
-    );
-  }
-
-  @Get('profile-photo/:profilephoto')
-  async getProfilePhoto(
-    @Param('profilephoto') profilephoto: string,
-    @Response() response,
-  ) {
-    return response.sendFile(profilephoto, {
-      root: './uploads/profile-photo',
-    });
+    const containerName = 'image';
+    const upload = await this.fileService.uploadFile(file, containerName);
+    return await this.userService.uploadImage(id, upload, containerName);
   }
 }

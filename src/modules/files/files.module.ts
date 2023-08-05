@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { FilesController } from './files.controller';
+import { FilesAzureService } from './file.azure.service';
 
 @Module({
-  controllers: [FilesController],
+  providers: [FilesAzureService],
+  exports: [FilesAzureService],
 })
 export class FilesModule {}

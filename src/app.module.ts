@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { PatientModule } from './modules/patient/patient.module';
 import { FilesModule } from './modules/files/files.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FilesModule } from './modules/files/files.module';
     PrismaModule,
     PatientModule,
     FilesModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [],
   providers: [
