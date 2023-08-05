@@ -7,7 +7,7 @@ import { ExamsModule } from './modules/exams/exams.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { PatientModule } from './modules/patient/patient.module';
-import { FilesModule } from './modules/files/files.module';
+import { AzureModule } from './modules/azure/azure.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -18,7 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     ExamsModule,
     PrismaModule,
     PatientModule,
-    FilesModule,
+    AzureModule,
     ConfigModule.forRoot(),
   ],
   controllers: [],

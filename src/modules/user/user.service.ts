@@ -7,13 +7,13 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-import { FilesAzureService } from '../files/file.azure.service';
+import { AzureFileService } from '../azure/azure.file.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly fileService: FilesAzureService,
+    private readonly fileService: AzureFileService,
   ) {}
 
   async create({ username, email, password }: CreateUserDto) {

@@ -17,14 +17,14 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/modules/auth/decorator/is-public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FilesAzureService } from '../files/file.azure.service';
+import { AzureFileService } from '../azure/azure.file.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly fileService: FilesAzureService,
+    private readonly fileService: AzureFileService,
   ) {}
 
   @IsPublic()
