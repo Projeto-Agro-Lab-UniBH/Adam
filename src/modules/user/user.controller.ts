@@ -8,24 +8,17 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { IsPublic } from 'src/modules/auth/decorator/is-public.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { AzureFileService } from '../azure/azure.file.service';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly fileService: AzureFileService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @IsPublic()
   @HttpCode(HttpStatus.CREATED)
@@ -60,17 +53,5 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Patch('upload/image/:id')
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadProfilePhoto(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    const containerName = 'image';
-    const upload = await this.fileService.uploadFile(file, containerName);
-    return await this.userService.uploadImage(id, upload, containerName);
   }
 }
