@@ -8,6 +8,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { AzureFileService } from '../azure/azure.file.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -78,45 +79,8 @@ export class UserService {
 
   async update(
     id: string,
-    dto: {
-      username?: string;
-      email: string;
-      password: string;
-    },
+    { profile_photo, username, email, password }: UpdateUserDto,
   ) {
-    const userAlreadyExists = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!userAlreadyExists) {
-      throw new NotFoundException('Not found user.');
-    }
-
-    const hash = await bcrypt.hash(dto.password, 8);
-
-    await this.prisma.user.update({
-      where: { id },
-      data: {
-        username: dto.username,
-        email: dto.email,
-        password: hash,
-      },
-    });
-  }
-
-  async remove(id: string) {
-    const userAlreadyExists = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!userAlreadyExists) {
-      throw new NotFoundException('Not found user.');
-    }
-
-    return await this.prisma.user.delete({ where: { id } });
-  }
-
-  async uploadImage(id: string, fileUrl: string, containerName: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -132,13 +96,30 @@ export class UserService {
       getfile = file_image.split('/').pop();
     }
 
+    const hash = await bcrypt.hash(password, 8);
+
     await this.prisma.user.update({
       where: { id },
       data: {
-        profile_photo: fileUrl,
+        profile_photo: profile_photo,
+        username: username,
+        email: email,
+        password: hash,
       },
     });
 
-    await this.fileService.deleteFile(getfile, containerName);
+    await this.fileService.deleteFile(getfile, 'image');
+  }
+
+  async remove(id: string) {
+    const userAlreadyExists = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userAlreadyExists) {
+      throw new NotFoundException('Not found user.');
+    }
+
+    return await this.prisma.user.delete({ where: { id } });
   }
 }

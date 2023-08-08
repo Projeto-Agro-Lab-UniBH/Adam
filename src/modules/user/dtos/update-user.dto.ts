@@ -8,6 +8,10 @@ import {
 } from 'class-validator';
 
 export class UpdateUserDto {
+  @ApiProperty()
+  @IsString({ message: 'profile_photo field must be string' })
+  profile_photo?: string;
+
   @ApiProperty({
     type: String,
     description: 'user name',
