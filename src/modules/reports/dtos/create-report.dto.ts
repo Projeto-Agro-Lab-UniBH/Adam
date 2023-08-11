@@ -18,6 +18,11 @@ export class CreateReportDto {
   author: string;
 
   @ApiProperty()
+  @IsNotEmpty({ message: 'title field cannot be empty' })
+  @IsString({ message: 'title field must be string' })
+  title: string;
+
+  @ApiProperty()
   @MaxLength(1000, {
     message: 'text must not contain more than 1000 characters',
   })
@@ -26,5 +31,8 @@ export class CreateReportDto {
   report_text?: string;
 
   @ApiProperty()
-  attachments?: string;
+  filename?: string;
+
+  @ApiProperty()
+  attachment?: string;
 }

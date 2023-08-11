@@ -18,7 +18,6 @@ model User {
 model Patient {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   profile_photo  String?
-  imageUrl       String?
   name           String
   owner          String?
   specie         String?
@@ -32,18 +31,21 @@ model Patient {
   departure_date String?
   reports        Report[]
   exams          Exam[]
+  files          Files[]
 }
 
 model Report {
-  id          String               @id @default(auto()) @map("_id") @db.ObjectId
-  patientId   String               @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
   shift       String
   author      String
+  title       String
   report_text String
+  filename    String?
+  attachment  String?
   createdAt   String?
   updatedAt   String?
-  patient     Patient?             @relation(fields: [patientId], references: [id])
-  attachments ReportsAttachments[]
+  patient     Patient? @relation(fields: [patientId], references: [id])
 }
 
 model Exam {
@@ -56,15 +58,6 @@ model Exam {
   attachments ExamAttachments[]
 }
 
-model ReportsAttachments {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  reportId String  @db.ObjectId
-  file     String
-  fileUrl  String
-  size     BigInt
-  report   Report? @relation(fields: [reportId], references: [id])
-}
-
 model ExamAttachments {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   examId  String @db.ObjectId
@@ -72,4 +65,12 @@ model ExamAttachments {
   fileUrl String
   size    BigInt
   exam    Exam?  @relation(fields: [examId], references: [id])
+}
+
+model Files {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String?  @db.ObjectId
+  filename  String
+  fileUrl   String
+  Patient   Patient? @relation(fields: [patientId], references: [id])
 }

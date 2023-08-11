@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { ReportsRepository } from './repositories/reports.repository';
 import { PatientModule } from '../patient/patient.module';
+import { AzureModule } from '../azure/azure.module';
 
 @Module({
-  imports: [PrismaModule, PatientModule],
+  imports: [PrismaModule, PatientModule, AzureModule],
   controllers: [ReportsController],
-  providers: [ReportsRepository, ReportsService],
+  providers: [ReportsService],
 })
 export class ReportsModule {}

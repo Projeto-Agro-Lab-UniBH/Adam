@@ -9,6 +9,8 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { PatientModule } from './modules/patient/patient.module';
 import { AzureModule } from './modules/azure/azure.module';
 import { ConfigModule } from '@nestjs/config';
+import { UploadsModule } from './modules/uploads/uploads.module';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ConfigModule } from '@nestjs/config';
     PatientModule,
     AzureModule,
     ConfigModule.forRoot(),
+    UploadsModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [

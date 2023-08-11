@@ -1,13 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   HttpCode,
   HttpStatus,
+  Post,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dtos/create-report.dto';
@@ -23,8 +23,16 @@ export class ReportsController {
   @IsPublic()
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
+  async create(@Body() body: CreateReportDto) {
+    return await this.reportsService.create({
+      patientId: body.patientId,
+      shift: body.shift,
+      author: body.author,
+      title: body.title,
+      filename: body.filename,
+      attachment: body.attachment,
+      report_text: body.report_text,
+    });
   }
 
   @IsPublic()
