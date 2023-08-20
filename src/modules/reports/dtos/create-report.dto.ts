@@ -34,5 +34,8 @@ export class CreateReportDto {
   filename?: string;
 
   @ApiProperty()
-  attachment?: string;
+  fileUrl?: string;
+
+  @ApiProperty()
+  fileSize?: number;
 }

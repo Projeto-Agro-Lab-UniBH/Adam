@@ -5,31 +5,55 @@ import {
 } from '@nestjs/common';
 import { CreateExamDto } from './dtos/create-exam.dto';
 import { UpdateExamDto } from './dtos/update-exam.dto';
-import { ExamRepository } from './repositories/exam.repository';
 import { PatientService } from '../patient/patient.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { format } from 'date-fns';
+import { AzureFileService } from '../azure/azure.file.service';
 
 @Injectable()
 export class ExamsService {
   constructor(
-    private readonly repository: ExamRepository,
+    private readonly prisma: PrismaService,
+    private readonly fileService: AzureFileService,
     private readonly patientService: PatientService,
   ) {}
 
-  async create({ patientId, name }: CreateExamDto) {
+  async create({
+    patientId,
+    date,
+    author,
+    type_of_exam,
+    annotations,
+    filename,
+    fileUrl,
+    fileSize,
+  }: CreateExamDto) {
     const patientExists = await this.patientService.findOne(patientId);
 
     if (!patientExists) {
       throw new BadRequestException('Animal id not exist.');
     }
 
-    return await this.repository.create({
-      patientId,
-      name,
+    return await this.prisma.exam.create({
+      data: {
+        patientId,
+        date,
+        author,
+        type_of_exam,
+        annotations,
+        filename,
+        fileUrl,
+        fileSize,
+        createdAt: format(new Date(), 'dd-MM-yyyy').toString(),
+        updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
+      },
     });
   }
 
   async findOne(id: string) {
-    const exam = await this.repository.findById(id);
+    const exam = await this.prisma.exam.findUnique({
+      where: { id },
+    });
 
     if (!exam) {
       throw new NotFoundException('Not found exam.');
@@ -38,25 +62,92 @@ export class ExamsService {
     return exam;
   }
 
-  async update(id: string, { name }: UpdateExamDto) {
-    const examExists = await this.repository.findById(id);
+  async getAllExamsByPatientId(patientId: string) {
+    const result = await this.prisma.exam.findMany({
+      where: {
+        patientId: {
+          equals: patientId,
+        },
+      },
+    });
 
-    if (!examExists) {
+    if (!result) {
+      return null;
+    }
+
+    return result;
+  }
+
+  async update(
+    id: string,
+    {
+      patientId,
+      date,
+      author,
+      type_of_exam,
+      annotations,
+      filename,
+      fileUrl,
+      fileSize,
+    }: UpdateExamDto,
+  ) {
+    const exam = await this.prisma.exam.findUnique({
+      where: { id },
+    });
+
+    if (!exam) {
       throw new NotFoundException('Not found exam.');
     }
 
-    return await this.repository.update(id, {
-      name,
+    if (fileUrl != null) {
+      const file_image = exam?.fileUrl;
+      let getfile = '';
+
+      if (file_image) {
+        getfile = file_image.split('/').pop();
+      }
+
+      await this.fileService.deleteFile(getfile, 'files');
+    }
+
+    await this.prisma.exam.update({
+      where: { id },
+      data: {
+        patientId,
+        date,
+        author,
+        type_of_exam,
+        annotations,
+        filename,
+        fileUrl,
+        fileSize,
+        updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
+      },
     });
   }
 
   async remove(id: string) {
-    const examExists = await this.repository.findById(id);
+    const exam = await this.prisma.exam.findUnique({
+      where: { id },
+    });
 
-    if (!examExists) {
+    if (!exam) {
       throw new NotFoundException('Not found exam.');
     }
 
-    return await this.repository.delete(id);
+    if (exam.fileUrl != null) {
+      const file_image = exam?.fileUrl;
+      let getfile = '';
+
+      if (file_image) {
+        getfile = file_image.split('/').pop();
+      }
+
+      await this.fileService.deleteFile(getfile, 'files');
+    }
+
+    await this.prisma.exam.delete({
+      where: { id },
+    });
   }
 }

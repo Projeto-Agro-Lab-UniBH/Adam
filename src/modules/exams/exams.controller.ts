@@ -31,6 +31,12 @@ export class ExamsController {
     return this.examsService.findOne(id);
   }
 
+  @HttpCode(HttpStatus.FOUND)
+  @Get(':patientId/exams')
+  getAllExamsByPatientId(@Param('patientId') patientId: string) {
+    return this.examsService.getAllExamsByPatientId(patientId);
+  }
+
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {

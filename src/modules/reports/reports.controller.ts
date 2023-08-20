@@ -29,9 +29,10 @@ export class ReportsController {
       shift: body.shift,
       author: body.author,
       title: body.title,
-      filename: body.filename,
-      attachment: body.attachment,
       report_text: body.report_text,
+      filename: body.filename,
+      fileUrl: body.fileUrl,
+      fileSize: body.fileSize,
     });
   }
 

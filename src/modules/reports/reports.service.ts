@@ -21,7 +21,8 @@ export class ReportsService {
     title,
     report_text,
     filename,
-    attachment,
+    fileUrl,
+    fileSize,
   }: CreateReportDto) {
     const patientExists = await this.patientService.findOne(patientId);
 
@@ -37,7 +38,8 @@ export class ReportsService {
         title,
         report_text,
         filename,
-        attachment,
+        fileUrl,
+        fileSize,
         createdAt: format(new Date(), 'dd-MM-yyyy').toString(),
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
@@ -83,7 +85,8 @@ export class ReportsService {
       title,
       report_text,
       filename,
-      attachment,
+      fileUrl,
+      fileSize,
     }: UpdateReportDto,
   ) {
     const report = await this.prisma.report.findUnique({
@@ -96,8 +99,8 @@ export class ReportsService {
       throw new NotFoundException('Not found report.');
     }
 
-    if (attachment != null) {
-      const file_image = report?.attachment;
+    if (fileUrl != null) {
+      const file_image = report?.fileUrl;
       let getfile = '';
 
       if (file_image) {
@@ -116,7 +119,8 @@ export class ReportsService {
         title,
         report_text,
         filename,
-        attachment,
+        fileUrl,
+        fileSize,
         updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
       },
     });
@@ -129,11 +133,22 @@ export class ReportsService {
       },
     });
 
+    if (report.fileUrl != null) {
+      const file_image = report?.fileUrl;
+      let getfile = '';
+
+      if (file_image) {
+        getfile = file_image.split('/').pop();
+      }
+
+      await this.fileService.deleteFile(getfile, 'files');
+    }
+
     if (!report) {
       throw new NotFoundException('Not found report.');
     }
 
-    return await this.prisma.report.delete({
+    await this.prisma.report.delete({
       where: {
         id,
       },

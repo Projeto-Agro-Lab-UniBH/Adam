@@ -42,35 +42,33 @@ model Report {
   title       String
   report_text String
   filename    String?
-  attachment  String?
+  fileUrl     String?
+  fileSize    Int?
   createdAt   String?
   updatedAt   String?
   patient     Patient? @relation(fields: [patientId], references: [id])
 }
 
 model Exam {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
-  patientId   String            @db.ObjectId
-  name        String
-  createdAt   String?
-  updatedAt   String?
-  patient     Patient?          @relation(fields: [patientId], references: [id])
-  attachments ExamAttachments[]
-}
-
-model ExamAttachments {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  examId  String @db.ObjectId
-  file    String
-  fileUrl String
-  size    BigInt
-  exam    Exam?  @relation(fields: [examId], references: [id])
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId    String   @db.ObjectId
+  date         String
+  author       String
+  type_of_exam String
+  annotations  String?
+  filename     String?
+  fileUrl      String?
+  fileSize     Int?
+  createdAt    String?
+  updatedAt    String?
+  patient      Patient? @relation(fields: [patientId], references: [id])
 }
 
 model Files {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String?  @db.ObjectId
+  patientId String   @db.ObjectId
   filename  String
   fileUrl   String
+  fileSize  Int?
   Patient   Patient? @relation(fields: [patientId], references: [id])
 }
