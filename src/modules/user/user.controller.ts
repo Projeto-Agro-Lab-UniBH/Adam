@@ -40,12 +40,12 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    const { username, email, password } = dto;
+    const { profile_photo, username, email } = dto;
 
-    return this.userService.update(id, {
+    return await this.userService.update(id, {
+      profile_photo,
       username,
       email,
-      password,
     });
   }
 

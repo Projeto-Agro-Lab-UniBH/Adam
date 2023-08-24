@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { AzureFileService } from '../azure/azure.file.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 
 @Injectable()
 export class UserService {
@@ -77,10 +78,7 @@ export class UserService {
     return user;
   }
 
-  async update(
-    id: string,
-    { profile_photo, username, email, password }: UpdateUserDto,
-  ) {
+  async update(id: string, data: UpdateUserDto) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -89,27 +87,49 @@ export class UserService {
       throw new NotFoundException('Not found user.');
     }
 
-    const file_image = user?.profile_photo;
-    let getfile = '';
+    if (data.profile_photo != null) {
+      const file_image = user?.profile_photo;
+      let getfile = '';
 
-    if (file_image) {
-      getfile = file_image.split('/').pop();
+      if (file_image) {
+        getfile = file_image.split('/').pop();
+      }
+
+      await this.fileService.deleteFile(getfile, 'image');
     }
-
-    const hash = await bcrypt.hash(password, 8);
 
     await this.prisma.user.update({
       where: { id },
       data: {
-        profile_photo: profile_photo,
-        username: username,
-        email: email,
-        password: hash,
+        profile_photo: data.profile_photo,
+        username: data.username,
+        email: data.email,
       },
     });
-
-    await this.fileService.deleteFile(getfile, 'image');
   }
+
+  // implementação em andamento
+  // async updatePassword(id: string, { password }: UpdateUserPasswordDto) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { id },
+  //   });
+
+  //   if (!user) {
+  //     throw new NotFoundException('Not found user.');
+  //   }
+
+  //   const hash = await bcrypt.hash(password, 8);
+
+  //   await this.prisma.user.update({
+  //     where: { id },
+  //     data: {
+  //       profile_photo: user.profile_photo,
+  //       username: user.username,
+  //       email: user.email,
+  //       password: hash,
+  //     },
+  //   });
+  // }
 
   async remove(id: string) {
     const userAlreadyExists = await this.prisma.user.findUnique({
