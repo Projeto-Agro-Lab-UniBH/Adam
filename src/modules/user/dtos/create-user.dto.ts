@@ -8,6 +8,9 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty()
+  profile_photo?: string;
+
   @ApiProperty({
     type: String,
     description: 'user name',
