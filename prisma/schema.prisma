@@ -16,22 +16,26 @@ model User {
 }
 
 model Patient {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  profile_photo  String?
-  name           String
-  owner          String?
-  specie         String?
-  race           String?
-  gender         String?
-  weight         String?
-  prognosis      String?
-  diagnosis      Json[]
-  physical_shape String?
-  entry_date     String?
-  departure_date String?
-  reports        Report[]
-  exams          Exam[]
-  files          Files[]
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  profile_photo     String?
+  name              String?
+  nameless_patient  Boolean?
+  owner             String?
+  ownerless_patient Boolean?
+  specie            String?
+  undefined_specie  Boolean?
+  race              String?
+  undefined_race    Boolean?
+  gender            String?
+  weight            String?
+  prognosis         String?
+  diagnosis         Json[]
+  physical_shape    String?
+  entry_date        String?
+  departure_date    String?
+  reports           Report[]
+  exams             Exam[]
+  files             Files[]
 }
 
 model Report {

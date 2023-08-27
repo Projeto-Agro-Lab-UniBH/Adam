@@ -14,9 +14,11 @@ export class CreatePatientDto {
     description: 'patient name',
     default: 'Kira',
   })
-  @IsNotEmpty({ message: 'name field cannot be empty' })
   @IsString({ message: 'name field must be string' })
-  name: string;
+  name?: string;
+
+  @ApiProperty()
+  nameless_patient?: boolean;
 
   @ApiProperty({
     type: String,
@@ -26,6 +28,9 @@ export class CreatePatientDto {
   @IsString({ message: 'owner field must be string' })
   owner?: string;
 
+  @ApiProperty()
+  ownerless_patient?: boolean;
+
   @ApiProperty({
     type: String,
     description: 'patient specie name',
@@ -34,6 +39,9 @@ export class CreatePatientDto {
   @IsString({ message: 'specie field must be string' })
   specie?: string;
 
+  @ApiProperty()
+  undefined_specie?: boolean;
+
   @ApiProperty({
     type: String,
     description: 'patient race name',
@@ -41,6 +49,9 @@ export class CreatePatientDto {
   })
   @IsString({ message: 'race field must be string' })
   race?: string;
+
+  @ApiProperty()
+  undefined_race?: boolean;
 
   @ApiProperty({
     type: String,
