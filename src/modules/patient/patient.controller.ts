@@ -19,64 +19,61 @@ import { IsPublic } from '../auth/decorator/is-public.decorator';
 
 @ApiTags('Patient')
 @Controller('patient')
+@IsPublic()
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getAll(@Query('page') page?: string, @Query('size') size?: string) {
-    const defaultPage = !page ? 1 : page;
-    const defaultSize = !size ? 6 : size;
-
-    return await this.patientService.getAll(
-      Number(defaultPage),
-      Number(defaultSize),
-    );
+  async getAll(@Query('page') page = 1, @Query('size') size = 6) {
+    return this.patientService.getAll(page, size);
   }
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.patientService.findOne(id);
+    return this.patientService.findOne(id);
   }
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
-  @Get('search/filters?')
+  @Get('search/filters')
   async search(@Request() request) {
-    return await this.patientService.search(
-      request.query.hasOwnProperty('page') ? request.query.page : 1,
-      request.query.hasOwnProperty('size') ? request.query.size : 6,
-      request.query.hasOwnProperty('prognosis') ? request.query.prognosis : '',
-      request.query.hasOwnProperty('gender') ? request.query.gender : '',
-      request.query.hasOwnProperty('physical_shape')
-        ? request.query.physical_shape
-        : '',
+    const {
+      page = 1,
+      size = 6,
+      prognosis = '',
+      gender = '',
+      physical_shape = '',
+      search = '',
+    } = request.query;
+    return this.patientService.search(
+      page,
+      size,
+      prognosis,
+      gender,
+      physical_shape,
+      search,
     );
   }
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Post()
   async create(@Body() createPatientDto: CreatePatientDto) {
-    return await this.patientService.create(createPatientDto);
+    return this.patientService.create(createPatientDto);
   }
 
-  @IsPublic()
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updatePatientDto: UpdatePatientDto,
   ) {
-    return await this.patientService.update(id, updatePatientDto);
+    return this.patientService.update(id, updatePatientDto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return await this.patientService.delete(id);
+    return this.patientService.delete(id);
   }
 }

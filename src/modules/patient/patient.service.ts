@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePatientDto } from './dtos/create-patient.dto';
 import { UpdatePatientDto } from './dtos/update-patient.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Patient } from '@prisma/client';
+import { Patient, Prisma } from '@prisma/client';
 import { AzureFileService } from '../azure/azure.file.service';
 
 @Injectable()
@@ -117,8 +117,9 @@ export class PatientService {
     prognosis = '',
     gender = '',
     physical_shape = '',
+    search = '',
   ) {
-    const whereClause: Record<string, string> = {};
+    const whereClause: Prisma.PatientWhereInput = {};
 
     if (prognosis) {
       whereClause.prognosis = prognosis;
@@ -128,6 +129,43 @@ export class PatientService {
     }
     if (physical_shape) {
       whereClause.physical_shape = physical_shape;
+    }
+
+    if (search) {
+      whereClause.OR = [];
+
+      whereClause.OR.push(
+        {
+          name: {
+            contains: search,
+          },
+        },
+        {
+          specie: {
+            contains: search,
+          },
+        },
+        {
+          race: {
+            contains: search,
+          },
+        },
+        {
+          prognosis: {
+            contains: search,
+          },
+        },
+        {
+          gender: {
+            contains: search,
+          },
+        },
+        {
+          physical_shape: {
+            contains: search,
+          },
+        },
+      );
     }
 
     const skip = (page - 1) * size;
@@ -202,4 +240,19 @@ export class PatientService {
       },
     };
   }
+}
+
+function isValidObjectID(objectID: string): boolean {
+  // Verificar se a string tem exatamente 24 caracteres (12 bytes em formato hexadecimal)
+  if (objectID.length !== 24) {
+    return false;
+  }
+
+  // Verificar se a string consiste apenas em caracteres hexadecimais
+  const hexRegex = /^[0-9a-fA-F]+$/;
+  if (!hexRegex.test(objectID)) {
+    return false;
+  }
+
+  return true;
 }
