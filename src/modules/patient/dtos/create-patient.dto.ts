@@ -15,10 +15,7 @@ export class CreatePatientDto {
     default: 'Kira',
   })
   @IsString({ message: 'name field must be string' })
-  name?: string;
-
-  @ApiProperty()
-  nameless_patient?: boolean;
+  name: string;
 
   @ApiProperty({
     type: String,
