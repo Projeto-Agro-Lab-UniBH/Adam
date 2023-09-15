@@ -32,7 +32,25 @@ export class PatientController {
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.patientService.findOne(id);
+    return await this.patientService.findOne(id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('search/by/values')
+  async findByName(@Request() request) {
+    const {
+      prognosis = '',
+      gender = '',
+      physical_shape = '',
+      search = '',
+    } = request.query;
+
+    return this.patientService.findByValues(
+      prognosis,
+      gender,
+      physical_shape,
+      search,
+    );
   }
 
   @HttpCode(HttpStatus.OK)

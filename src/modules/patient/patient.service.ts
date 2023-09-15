@@ -51,6 +51,54 @@ export class PatientService {
     return result;
   }
 
+  async findByValues(
+    prognosis = '',
+    gender = '',
+    physical_shape = '',
+    search = '',
+  ): Promise<
+    Pick<Patient, 'id' | 'profile_photo' | 'name' | 'specie' | 'race'>[]
+  > {
+    const whereClause: Prisma.PatientWhereInput = {};
+
+    if (prognosis) {
+      whereClause.prognosis = prognosis;
+    }
+    if (gender) {
+      whereClause.gender = gender;
+    }
+    if (physical_shape) {
+      whereClause.physical_shape = physical_shape;
+    }
+
+    if (search) {
+      whereClause.name = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
+
+    const result = await this.prisma.patient.findMany({
+      where: whereClause,
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+        profile_photo: true,
+        name: true,
+        specie: true,
+        race: true,
+      },
+    });
+
+    if (!result) {
+      return null;
+    }
+
+    return result;
+  }
+
   async create(data: CreatePatientDto) {
     const newData = await this.prisma.patient.create({
       data: {
@@ -132,40 +180,10 @@ export class PatientService {
     }
 
     if (search) {
-      whereClause.OR = [];
-
-      whereClause.OR.push(
-        {
-          name: {
-            contains: search,
-          },
-        },
-        {
-          specie: {
-            contains: search,
-          },
-        },
-        {
-          race: {
-            contains: search,
-          },
-        },
-        {
-          prognosis: {
-            contains: search,
-          },
-        },
-        {
-          gender: {
-            contains: search,
-          },
-        },
-        {
-          physical_shape: {
-            contains: search,
-          },
-        },
-      );
+      whereClause.name = {
+        contains: search,
+        mode: 'insensitive',
+      };
     }
 
     const skip = (page - 1) * size;
