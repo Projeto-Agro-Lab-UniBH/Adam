@@ -71,11 +71,13 @@ export class PatientService {
       whereClause.physical_shape = physical_shape;
     }
 
-    if (search) {
+    if (search && !isValidObjectID(search)) {
       whereClause.name = {
         contains: search,
         mode: 'insensitive',
       };
+    } else if (search) {
+      whereClause.id = search;
     }
 
     const result = await this.prisma.patient.findMany({
