@@ -7,7 +7,6 @@ import { CreateExamDto } from './dtos/create-exam.dto';
 import { UpdateExamDto } from './dtos/update-exam.dto';
 import { PatientService } from '../patient/patient.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { format } from 'date-fns';
 import { AzureFileService } from '../azure/azure.file.service';
 
 @Injectable()
@@ -20,13 +19,16 @@ export class ExamsService {
 
   async create({
     patientId,
-    date,
-    author,
+    username,
+    execution_date,
+    runtime,
+    execution_period,
+    responsible_person,
     type_of_exam,
-    annotations,
-    filename,
-    fileUrl,
-    fileSize,
+    exam_name,
+    diagnosis,
+    prognosis,
+    description_of_treatment,
   }: CreateExamDto) {
     const patientExists = await this.patientService.findOne(patientId);
 
@@ -34,24 +36,25 @@ export class ExamsService {
       throw new BadRequestException('Animal id not exist.');
     }
 
-    return await this.prisma.exam.create({
+    return await this.prisma.exams.create({
       data: {
         patientId,
-        date,
-        author,
+        username,
+        execution_date,
+        runtime,
+        execution_period,
+        responsible_person,
         type_of_exam,
-        annotations,
-        filename,
-        fileUrl,
-        fileSize,
-        createdAt: format(new Date(), 'dd-MM-yyyy').toString(),
-        updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
+        exam_name,
+        diagnosis,
+        prognosis,
+        description_of_treatment,
       },
     });
   }
 
   async findOne(id: string) {
-    const exam = await this.prisma.exam.findUnique({
+    const exam = await this.prisma.exams.findUnique({
       where: { id },
     });
 
@@ -62,36 +65,23 @@ export class ExamsService {
     return exam;
   }
 
-  async getAllExamsByPatientId(patientId: string) {
-    const result = await this.prisma.exam.findMany({
-      where: {
-        patientId: {
-          equals: patientId,
-        },
-      },
-    });
-
-    if (!result) {
-      return null;
-    }
-
-    return result;
-  }
-
   async update(
     id: string,
     {
       patientId,
-      date,
-      author,
+      username,
+      execution_date,
+      runtime,
+      execution_period,
+      responsible_person,
       type_of_exam,
-      annotations,
-      filename,
-      fileUrl,
-      fileSize,
+      exam_name,
+      diagnosis,
+      prognosis,
+      description_of_treatment,
     }: UpdateExamDto,
   ) {
-    const exam = await this.prisma.exam.findUnique({
+    const exam = await this.prisma.exams.findUnique({
       where: { id },
     });
 
@@ -99,35 +89,26 @@ export class ExamsService {
       throw new NotFoundException('Not found exam.');
     }
 
-    if (fileUrl != null) {
-      const file_image = exam?.fileUrl;
-      let getfile = '';
-
-      if (file_image) {
-        getfile = file_image.split('/').pop();
-      }
-
-      await this.fileService.deleteFile(getfile, 'files');
-    }
-
-    await this.prisma.exam.update({
+    await this.prisma.exams.update({
       where: { id },
       data: {
         patientId,
-        date,
-        author,
+        username,
+        execution_date,
+        runtime,
+        execution_period,
+        responsible_person,
         type_of_exam,
-        annotations,
-        filename,
-        fileUrl,
-        fileSize,
-        updatedAt: format(new Date(), 'dd-MM-yyyy').toString(),
+        exam_name,
+        diagnosis,
+        prognosis,
+        description_of_treatment,
       },
     });
   }
 
   async remove(id: string) {
-    const exam = await this.prisma.exam.findUnique({
+    const exam = await this.prisma.exams.findUnique({
       where: { id },
     });
 
@@ -135,18 +116,7 @@ export class ExamsService {
       throw new NotFoundException('Not found exam.');
     }
 
-    if (exam.fileUrl != null) {
-      const file_image = exam?.fileUrl;
-      let getfile = '';
-
-      if (file_image) {
-        getfile = file_image.split('/').pop();
-      }
-
-      await this.fileService.deleteFile(getfile, 'files');
-    }
-
-    await this.prisma.exam.delete({
+    await this.prisma.exams.delete({
       where: { id },
     });
   }

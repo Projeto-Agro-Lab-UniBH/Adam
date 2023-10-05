@@ -24,16 +24,7 @@ export class ReportsController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(@Body() body: CreateReportDto) {
-    return await this.reportsService.create({
-      patientId: body.patientId,
-      shift: body.shift,
-      author: body.author,
-      title: body.title,
-      report_text: body.report_text,
-      filename: body.filename,
-      fileUrl: body.fileUrl,
-      fileSize: body.fileSize,
-    });
+    return await this.reportsService.create(body);
   }
 
   @IsPublic()

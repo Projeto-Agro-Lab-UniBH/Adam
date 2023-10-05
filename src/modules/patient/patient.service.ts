@@ -42,6 +42,81 @@ export class PatientService {
   async findOne(id: string): Promise<Patient> {
     const result = await this.prisma.patient.findUnique({
       where: { id },
+      include: {
+        exams: {
+          select: {
+            id: true,
+            patientId: true,
+            username: true,
+            execution_date: true,
+            runtime: true,
+            execution_period: true,
+            responsible_person: true,
+            type_of_exam: true,
+            exam_name: true,
+            diagnosis: true,
+            prognosis: true,
+            description_of_treatment: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        vaccines: {
+          select: {
+            id: true,
+            patientId: true,
+            username: true,
+            vaccine: true,
+            date_of_vaccination: true,
+            revaccination_date: true,
+            name_of_veterinarian: true,
+            vaccine_code: true,
+            age: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        surgery: {
+          select: {
+            id: true,
+            patientId: true,
+            username: true,
+            name_of_surgery: true,
+            risk_level: true,
+            execution_date: true,
+            duration: true,
+            period: true,
+            notes: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        hospitalizations: {
+          select: {
+            id: true,
+            patientId: true,
+            username: true,
+            reason: true,
+            prognosis: true,
+            entry_date: true,
+            departure_date: true,
+            notes: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        reports: {
+          select: {
+            id: true,
+            patientId: true,
+            username: true,
+            title: true,
+            text: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
     });
 
     if (!result) {
@@ -51,25 +126,12 @@ export class PatientService {
     return result;
   }
 
-  async findByValues(
-    prognosis = '',
-    gender = '',
-    physical_shape = '',
+  async findByName(
     search = '',
   ): Promise<
     Pick<Patient, 'id' | 'profile_photo' | 'name' | 'specie' | 'race'>[]
   > {
     const whereClause: Prisma.PatientWhereInput = {};
-
-    if (prognosis) {
-      whereClause.prognosis = prognosis;
-    }
-    if (gender) {
-      whereClause.gender = gender;
-    }
-    if (physical_shape) {
-      whereClause.physical_shape = physical_shape;
-    }
 
     if (search && !isValidObjectID(search)) {
       whereClause.name = {
@@ -124,18 +186,21 @@ export class PatientService {
     }
 
     const {
-      profile_photo,
       ownerless_patient,
       undefined_specie,
       undefined_race,
       ...updatedData
     } = data;
 
-    if (profile_photo) {
-      const getfile = patientExists.profile_photo?.split('/').pop();
-      if (getfile) {
-        await this.fileService.deleteFile(getfile, 'image');
+    if (data.profile_photo != null) {
+      const file_image = patientExists?.profile_photo;
+      let getfile = '';
+
+      if (file_image) {
+        getfile = file_image.split('/').pop();
       }
+
+      await this.fileService.deleteFile(getfile, 'image');
     }
 
     await this.prisma.patient.update({
@@ -161,31 +226,23 @@ export class PatientService {
     return await this.prisma.patient.delete({ where: { id } });
   }
 
-  async search(
+  async filter(
     page = 1,
-    size = 6,
-    prognosis = '',
+    size = 12,
+    status = '',
     gender = '',
     physical_shape = '',
-    search = '',
   ) {
     const whereClause: Prisma.PatientWhereInput = {};
 
-    if (prognosis) {
-      whereClause.prognosis = prognosis;
+    if (status) {
+      whereClause.status = status;
     }
     if (gender) {
       whereClause.gender = gender;
     }
     if (physical_shape) {
       whereClause.physical_shape = physical_shape;
-    }
-
-    if (search) {
-      whereClause.name = {
-        contains: search,
-        mode: 'insensitive',
-      };
     }
 
     const skip = (page - 1) * size;
@@ -200,43 +257,13 @@ export class PatientService {
           id: 'desc',
         },
         include: {
-          reports: {
+          _count: {
             select: {
-              id: true,
-              patientId: true,
-              shift: true,
-              author: true,
-              title: true,
-              report_text: true,
-              filename: true,
-              fileUrl: true,
-              fileSize: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-          exams: {
-            select: {
-              id: true,
-              patientId: true,
-              date: true,
-              author: true,
-              type_of_exam: true,
-              annotations: true,
-              filename: true,
-              fileUrl: true,
-              fileSize: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-          files: {
-            select: {
-              id: true,
-              patientId: true,
-              filename: true,
-              fileUrl: true,
-              fileSize: true,
+              vaccines: true,
+              exams: true,
+              surgery: true,
+              hospitalizations: true,
+              reports: true,
             },
           },
         },

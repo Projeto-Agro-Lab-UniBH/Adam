@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateExamDto {
@@ -8,25 +9,34 @@ export class CreateExamDto {
   patientId: string;
 
   @ApiProperty()
-  date: string;
+  username: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'author name field cannot be empty' })
-  @IsString({ message: 'author name field must be string' })
-  author: string;
+  execution_date: string;
+
+  @ApiProperty()
+  runtime: string;
+
+  @ApiProperty()
+  execution_period: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'responsible_person field cannot be empty' })
+  @IsString({ message: 'responsible_person name field must be string' })
+  responsible_person: string;
 
   @ApiProperty()
   type_of_exam: string;
 
   @ApiProperty()
-  annotations?: string;
+  exam_name: string;
 
   @ApiProperty()
-  filename: string;
+  diagnosis: Prisma.JsonArray;
 
   @ApiProperty()
-  fileUrl: string;
+  prognosis: string;
 
   @ApiProperty()
-  fileSize: number;
+  description_of_treatment?: string;
 }

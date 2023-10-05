@@ -10,7 +10,9 @@ import { PatientModule } from './modules/patient/patient.module';
 import { AzureModule } from './modules/azure/azure.module';
 import { ConfigModule } from '@nestjs/config';
 import { UploadsModule } from './modules/uploads/uploads.module';
-import { FilesModule } from './modules/files/files.module';
+import { HospitalizationsModule } from './modules/hospitalizations/hospitalizations.module';
+import { SurgeryModule } from './modules/surgery/surgery.module';
+import { VaccineModule } from './modules/vaccine/vaccine.module';
 
 @Module({
   imports: [
@@ -21,9 +23,11 @@ import { FilesModule } from './modules/files/files.module';
     PrismaModule,
     PatientModule,
     AzureModule,
-    ConfigModule.forRoot(),
     UploadsModule,
-    FilesModule,
+    HospitalizationsModule,
+    SurgeryModule,
+    VaccineModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [],
   providers: [

@@ -16,8 +16,12 @@ model User {
 }
 
 model Patient {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
   profile_photo     String?
+  age               String?
+  date_of_birth     String?
+  pedigree_RGA      String?
+  chip_number       String?
   name              String
   owner             String?
   ownerless_patient Boolean?
@@ -25,53 +29,90 @@ model Patient {
   undefined_specie  Boolean?
   race              String?
   undefined_race    Boolean?
+  status            String
   gender            String?
-  weight            String?
-  prognosis         String?
-  diagnosis         Json[]
   physical_shape    String?
-  entry_date        String?
-  departure_date    String?
-  reports           Report[]
-  exams             Exam[]
-  files             Files[]
+  starting_weight   String?
+  current_weight    String?
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  exams             Exams[]
+  surgery           Surgery[]
+  hospitalizations  Hospitalizations[]
+  reports           Reports[]
+  vaccines          Vaccine[]
 }
 
-model Report {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId   String   @db.ObjectId
-  shift       String
-  author      String
-  title       String
-  report_text String
-  filename    String?
-  fileUrl     String?
-  fileSize    Int?
-  createdAt   String?
-  updatedAt   String?
-  patient     Patient? @relation(fields: [patientId], references: [id])
+model Vaccine {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId            String   @db.ObjectId
+  username             String
+  vaccine              String
+  date_of_vaccination  String
+  revaccination_date   String?
+  vaccine_code         String?
+  name_of_veterinarian String
+  age                  String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  patient              Patient? @relation(fields: [patientId], references: [id])
 }
 
-model Exam {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId    String   @db.ObjectId
-  date         String
-  author       String
-  type_of_exam String
-  annotations  String?
-  filename     String?
-  fileUrl      String?
-  fileSize     Int?
-  createdAt    String?
-  updatedAt    String?
-  patient      Patient? @relation(fields: [patientId], references: [id])
-}
-
-model Files {
+model Reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   patientId String   @db.ObjectId
-  filename  String
-  fileUrl   String
-  fileSize  Int?
-  Patient   Patient? @relation(fields: [patientId], references: [id])
+  username  String
+  title     String
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  patient   Patient? @relation(fields: [patientId], references: [id])
+}
+
+model Hospitalizations {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId      String   @db.ObjectId
+  username       String
+  reason         String
+  prognosis      String
+  entry_date     String
+  departure_date String?
+  notes          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  patient        Patient? @relation(fields: [patientId], references: [id])
+}
+
+model Surgery {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId       String   @db.ObjectId
+  username        String
+  name_of_surgery String
+  risk_level      String
+  execution_date  String
+  duration        String
+  period          String
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  patient         Patient? @relation(fields: [patientId], references: [id])
+}
+
+model Exams {
+  id                       String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId                String   @db.ObjectId
+  username                 String
+  execution_date           String
+  runtime                  String
+  execution_period         String
+  responsible_person       String
+  type_of_exam             String
+  exam_name                String
+  diagnosis                Json[]
+  prognosis                String?
+  description_of_treatment String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  patient                  Patient? @relation(fields: [patientId], references: [id])
 }

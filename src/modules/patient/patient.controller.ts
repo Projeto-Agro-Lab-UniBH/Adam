@@ -36,41 +36,29 @@ export class PatientController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('search/by/values')
+  @Get('search/by/name')
   async findByName(@Request() request) {
-    const {
-      prognosis = '',
-      gender = '',
-      physical_shape = '',
-      search = '',
-    } = request.query;
+    const { search = '' } = request.query;
 
-    return this.patientService.findByValues(
-      prognosis,
-      gender,
-      physical_shape,
-      search,
-    );
+    return this.patientService.findByName(search);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('search/filters')
+  @Get('search/by/filters')
   async search(@Request() request) {
     const {
       page = 1,
       size = 6,
-      prognosis = '',
+      status = '',
       gender = '',
       physical_shape = '',
-      search = '',
     } = request.query;
-    return this.patientService.search(
+    return this.patientService.filter(
       page,
       size,
-      prognosis,
+      status,
       gender,
       physical_shape,
-      search,
     );
   }
 

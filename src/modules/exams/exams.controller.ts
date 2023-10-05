@@ -25,11 +25,6 @@ export class ExamsController {
     return this.examsService.create(createExamDto);
   }
 
-  @Get(':patientId/exams')
-  async getAllExamsByPatientId(@Param('patientId') patientId: string) {
-    return await this.examsService.getAllExamsByPatientId(patientId);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.examsService.findOne(id);

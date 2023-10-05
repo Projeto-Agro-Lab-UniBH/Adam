@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreatePatientDto {
@@ -8,6 +7,18 @@ export class CreatePatientDto {
     default: '',
   })
   profile_photo?: string;
+
+  @ApiProperty()
+  age?: string;
+
+  @ApiProperty()
+  date_of_birth?: string;
+
+  @ApiProperty()
+  pedigree_RGA?: string;
+
+  @ApiProperty()
+  chip_number?: string;
 
   @ApiProperty({
     type: String,
@@ -50,6 +61,9 @@ export class CreatePatientDto {
   @ApiProperty()
   undefined_race?: boolean;
 
+  @ApiProperty()
+  status: string;
+
   @ApiProperty({
     type: String,
     description: 'patient gender name',
@@ -61,56 +75,23 @@ export class CreatePatientDto {
 
   @ApiProperty({
     type: String,
-    description: 'patient weight',
-    default: '320g',
-  })
-  @IsString({ message: 'weight field must be string' })
-  weight?: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'What situation is the patient in?',
-    default: 'Aguardando alta',
-  })
-  @IsString({ message: 'situation field must be string' })
-  prognosis?: string;
-
-  @ApiProperty({
-    description: 'patient diagnosis',
-    default: [
-      {
-        label: 'Asas quebradas',
-        value: 'Asas quebradas',
-      },
-      {
-        label: 'Bico perfurado',
-        value: 'Bico perfurado',
-      },
-    ],
-  })
-  diagnosis?: Prisma.JsonValue[];
-
-  @ApiProperty({
-    type: String,
     description: 'physical size of the patient',
     default: 'Leve porte',
   })
   @IsString({ message: 'physical_shape filed must be string' })
   physical_shape?: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'date the patient was admitted to the hospital',
-    default: '21-03-2013',
-  })
-  @IsString({ message: 'entry_date field must be string' })
-  entry_date?: string;
+  @ApiProperty()
+  starting_weight?: string;
 
   @ApiProperty({
     type: String,
-    description: 'date the patient left the hospital',
-    default: '24-03-2013',
+    description: 'patient weight',
+    default: '320g',
   })
-  @IsString({ message: 'departure_date field must be string' })
-  departure_date?: string;
+  @IsString({ message: 'weight field must be string' })
+  current_weight?: string;
+
+  @ApiProperty()
+  notes?: string;
 }
